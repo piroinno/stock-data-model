@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "stock.data.model"
+version = "0.1.14"
+description = ""
+authors = ["piroinno <peter.irojah@piroinno.com>"]
+readme = "README.md"
+
+packages = [
+  { include = "stock", from = "src" },
+  { include = "stock/**/*.py", from = "src" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+alembic = "^1.10.2"
+greenlet = "^2.0.2"
+psycopg2 = "^2.9.5"
+SQLAlchemy = "^2.0.5.post1"
+Mako = "^1.2.4"
+MarkupSafe = "^2.1.2"
+typing_extensions = "^4.5.0"
+pydantic = "1.10.6"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = [
+  ".", "src",
+]
