@@ -1,5 +1,5 @@
 name: Stock Data Model Build / Test / Deploy
-run-name: ${{ github.repository }} - ${{ github.ref }} - ${{ github.run_number }}
+run-name: ${{ github.event.repository.updated_at}}_${{ github.run_number }}_${{ github.ref }}
 on:
   push:
     branches:
