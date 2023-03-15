@@ -20,6 +20,7 @@ def db():
     db = SessionLocal()
     try:
         recreate_test_db()
+        add_timezone(db)
         add_country(db)
         add_city(db)
         add_exchanges(db)
@@ -28,6 +29,16 @@ def db():
     finally:
         drop_test_db()
         db.close()
+
+def add_timezone(db: SessionLocal):
+    # Add test data
+    crud.set_timezone(db, timezone=models.TimezoneModel(
+        name="Eastern Standard Time", abbr="EST", dst="EDT"
+    ))
+
+    crud.set_timezone(db, timezone=models.TimezoneModel(
+        name="Greenwich Mean Time", abbr="GMT", dst="BST"
+    ))
 
 def add_city(db: SessionLocal):
     # Add test data
