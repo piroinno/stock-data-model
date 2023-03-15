@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "stock.data.model"
-version = "0.1.14"
-description = ""
+version = "0.1.15"
+description = "stock.data.model"
 authors = ["piroinno <peter.irojah@piroinno.com>"]
 readme = "README.md"
 
