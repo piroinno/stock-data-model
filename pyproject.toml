@@ -7,9 +7,12 @@ readme = "README.md"
 
 packages = [
   { include = "stock", from = "src" },
-  { include = "stock/**/*.py", from = "src" },
-  { exclude = ["stock/data/model/migrations"] },
-  { exclude = ["stock/data/model/alembic.ini"] }
+  { include = "stock/**/*.py", from = "src" }
+]
+
+exclude = [
+  "stock/data/model/migrations",
+  "stock/data/model/alembic.ini"
 ]
 
 [tool.poetry.dependencies]
