@@ -108,14 +108,18 @@ def test_get_tickers(db: SessionLocal):
 
 def test_get_ticker_by_name(db: SessionLocal):
     ticker = crud.get_ticker_by_name(db, ticker="AAPL")
-    assert ticker.id == 1
-    assert ticker.ticker == "AAPL"
+    try:
+        assert ticker.id == 1
+        assert ticker.ticker == "AAPL"
+    except AttributeError:
+        assert False
+
 
 
 def test_get_exchange(db: SessionLocal):
     exchange = crud.get_exchange(db, exchange_id=1)
     assert exchange.id == 1
-    assert exchange.exchange == "NASDAQ"
+    assert exchange.mic == "XNAS"
 
 
 def test_get_exchanges(db: SessionLocal):
