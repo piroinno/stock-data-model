@@ -17,6 +17,7 @@ def recreate_test_db():
 
 @pytest.fixture(scope="session")
 def db():
+    recreate_test_db()
     db = SessionLocal()
     add_timezone(db)
     add_country(db)
