@@ -18,16 +18,14 @@ def recreate_test_db():
 @pytest.fixture(scope="module")
 def db():
     db = SessionLocal()
+    add_timezone(db)
+    add_country(db)
+    add_city(db)
+    add_exchanges(db)
+    add_ticker(db)
     try:
-        recreate_test_db()
-        add_timezone(db)
-        add_country(db)
-        add_city(db)
-        add_exchanges(db)
-        add_ticker(db)
         yield db
     finally:
-        drop_test_db()
         db.close()
 
 def add_timezone(db: SessionLocal):
@@ -82,9 +80,6 @@ def add_exchanges(db: SessionLocal):
             acronym="LSE", mic="XLON"
         )
     ])
-    crud.set_ticker(db, ticker=models.TickerModel(
-        ticker="AAPL", name="Apple Inc.", exchange_id=1
-    ))
 
 
 def test_get_ticker(db: SessionLocal):
