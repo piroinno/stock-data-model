@@ -67,15 +67,21 @@ def add_ticker(db: SessionLocal):
 
 def add_exchanges(db: SessionLocal):
     # Add test data
-    crud.set_exchange_list(db, exchange_list=[
+    crud.set_exchange(db, exchange=[
         models.ExchangeModel(
             name="National Association of Securities Dealers Automated Quotations", country_id=1, city_id=1, timezone_id=1,
             acronym="NASDAQ", mic="XNAS"
-        ),
+        )
+    ])
+
+    crud.set_exchange_list(db, exchange=[
         models.ExchangeModel(
             name="New York Stock Exchange", country_id=1, city_id=1, timezone_id=1,
             acronym="NYSE", mic="XNYS"
-        ),
+        )
+    ])
+
+    crud.set_exchange_list(db, exchange=[
         models.ExchangeModel(
             name="London Stock Exchange", country_id=2, city_id=2, timezone_id=2,
             acronym="LSE", mic="XLON"
