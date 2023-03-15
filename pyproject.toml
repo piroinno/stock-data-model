@@ -1,18 +1,17 @@
 [tool.poetry]
 name = "stock.data.model"
-version = "0.1.18"
+version = "0.1.19"
 description = "stock.data.model"
 authors = ["piroinno <peter.irojah@piroinno.com>"]
 readme = "README.md"
 
 packages = [
-  { include = "stock", from = "src" },
-  { include = "stock/**/*.py", from = "src" }
+  { include = "stock", from = "src" }
 ]
 
 exclude = [
-  "stock/data/model/migrations",
-  "stock/data/model/alembic.ini"
+  "src/stock/data/model/migrations",
+  "src/stock/data/model/alembic.ini"
 ]
 
 [tool.poetry.dependencies]
