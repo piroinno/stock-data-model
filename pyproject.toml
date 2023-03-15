@@ -6,10 +6,10 @@ authors = ["piroinno <peter.irojah@piroinno.com>"]
 readme = "README.md"
 
 packages = [
-  { include = "stock", from = "src" }
-  { include = "stock/**/*.py", from = "src" }
-  {exclude = ["stock/data/model/migrations/*"]},
-  {exclude = ["stock/data/model/alembic.ini"]},
+  { include = "stock", from = "src" },
+  { include = "stock/**/*.py", from = "src" },
+  { exclude = ["stock/data/model/migrations"] },
+  { exclude = ["stock/data/model/alembic.ini"] }
 ]
 
 [tool.poetry.dependencies]
