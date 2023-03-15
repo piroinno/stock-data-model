@@ -41,11 +41,10 @@ def set_exchange(db: Session, exchange: models.ExchangeModel):
     return exchange
 
 def set_exchange_list(db: Session, exchange_list: list):
-    for exchange in exchange_list:
-        db.add(exchange)
+    db.add_all(exchange_list)
     db.commit()
-    db.refresh(exchange)
-    return exchange
+    db.refresh(exchange_list)
+    return exchange_list
 
 def get_currency(db: Session, currency_id: int, name: str = None):
     if currency_id:
@@ -111,11 +110,23 @@ def get_timezones(db: Session, skip: int = 0, limit: int = 100):
 def get_ticker_by_exchange(db: Session, exchange_id: int):
     return db.query(models.TickerModel).filter(models.TickerModel.exchange_id == exchange_id).all()
 
+def set_eod_ingestor_data_store(db: Session, eod_data_store: models.EodIngestorDataStoreModel):
+    db.add(eod_data_store)
+    db.commit()
+    db.refresh(eod_data_store)
+    return eod_data_store
+
 def get_eod_ingestor_data_store(db: Session, eod_data_store_id: int):
     return db.query(models.EodIngestorDataStoreModel).filter(models.EodIngestorDataStoreModel.id == eod_data_store_id).first()
 
 def get_eod_ingestor_data_stores(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.EodIngestorDataStoreModel).offset(skip).limit(limit).all()
+
+def set_eod_ingestor_job_status(db: Session, eod_ingestor_job_status: models.EodIngestorJobStatusModel):
+    db.add(eod_ingestor_job_status)
+    db.commit()
+    db.refresh(eod_ingestor_job_status)
+    return eod_ingestor_job_status
 
 def get_eod_ingestor_job_status(db: Session, eod_ingestor_job_status_id: int):
     return db.query(models.EodIngestorJobStatusModel).filter(models.EodIngestorJobStatusModel.id == eod_ingestor_job_status_id).first()
@@ -126,9 +137,21 @@ def get_eod_ingestor_job_statuses(db: Session, skip: int = 0, limit: int = 100):
 def get_eod_ingestor_job_status_by_ticker(db: Session, ticker_id: int, run_date: datetime.datetime = datetime.datetime.now()):
     return db.query(models.EodIngestorJobStatusModel).filter(models.EodIngestorJobStatusModel.ticker_id == ticker_id).filter(models.EodIngestorJobStatusModel.end_date == run_date).first()
 
+def set_eod_ingester_job_data_location(db: Session, eod_ingestor_job_data_location: models.EodIngestorJobDataLocationModel):
+    db.add(eod_ingestor_job_data_location)
+    db.commit()
+    db.refresh(eod_ingestor_job_data_location)
+    return eod_ingestor_job_data_location
+
 def get_eod_ingestor_job_data_location(db: Session, eod_ingestor_job_data_location_id: int):
     return db.query(models.EodIngestorJobDataLocationModel).filter(models.EodIngestorJobDataLocationModel.id == eod_ingestor_job_data_location_id).first()
 
-def get_eod_ingestor_job_data_locations(db: Session, skip: int = 0, limit: int = 100):
+def set_eod_ingestor_job_data_location_list(db: Session, eod_ingestor_job_data_locations: list):
+    db.add_all(eod_ingestor_job_data_locations)
+    db.commit()
+    db.refresh(eod_ingestor_job_data_locations)
+    return eod_ingestor_job_data_locations
+
+def get_eod_ingestor_job_data_location_list(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.EodIngestorJobDataLocationModel).offset(skip).limit(limit).all()
 
