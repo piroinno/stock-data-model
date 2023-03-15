@@ -6,8 +6,7 @@ authors = ["piroinno <peter.irojah@piroinno.com>"]
 readme = "README.md"
 
 packages = [
-  { include = "stock", from = "src" },
-  { include = "stock/**/*.py", from = "src" }
+  { include = "stock.data.model", from = "src" }
 ]
 
 [tool.poetry.dependencies]
