@@ -112,8 +112,6 @@ def test_get_ticker_by_name(db: SessionLocal):
     assert ticker.ticker == "AAPL"
 
 
-
-
 def test_get_exchange(db: SessionLocal):
     exchange = crud.get_exchange(db, exchange_id=1)
     assert exchange.id == 1
