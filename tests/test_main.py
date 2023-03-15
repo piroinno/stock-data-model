@@ -15,7 +15,7 @@ def recreate_test_db():
     drop_test_db()
     init_test_db()
 
-@pytest.fixture(scope="session", autouse=True, name="db")
+@pytest.fixture(scope="module")
 def db():
     db = SessionLocal()
     try:
