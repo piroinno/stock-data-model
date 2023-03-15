@@ -107,12 +107,10 @@ def test_get_tickers(db: SessionLocal):
 
 
 def test_get_ticker_by_name(db: SessionLocal):
-    ticker = crud.get_ticker_by_name(db, ticker="AAPL")
-    try:
-        assert ticker.id == 1
-        assert ticker.ticker == "AAPL"
-    except AttributeError:
-        assert False
+    ticker = crud.get_ticker_by_name(db, ticker="Apple Inc.")
+    assert ticker.id == 1
+    assert ticker.ticker == "AAPL"
+
 
 
 
