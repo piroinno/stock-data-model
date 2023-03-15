@@ -18,11 +18,6 @@ def recreate_test_db():
 @pytest.fixture(scope="module")
 def db():
     db = SessionLocal()
-    add_timezone(db)
-    add_country(db)
-    add_city(db)
-    add_exchanges(db)
-    add_ticker(db)
     try:
         yield db
     finally:
@@ -81,6 +76,11 @@ def add_exchanges(db: SessionLocal):
         )
     ])
 
+add_timezone(db)
+add_country(db)
+add_city(db)
+add_exchanges(db)
+add_ticker(db)
 
 def test_get_ticker(db: SessionLocal):
     ticker = crud.get_ticker(db, ticker_id=1)
