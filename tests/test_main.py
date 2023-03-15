@@ -1,40 +1,100 @@
-from stock.data.model import crud
-from sqlalchemy.orm import Session
+from stock.data.model import crud, models
+import os
+from sqlalchemy import MetaData, create_engine
+from sqlalchemy.orm import sessionmaker
 import pytest
+from stock.data.model.database import SessionLocal, Base, engine
+
+def init_test_db():
+    Base.metadata.create_all(bind=engine)
+
+def drop_test_db():
+    Base.metadata.drop_all(bind=engine)
+
+def recreate_test_db():
+    drop_test_db()
+    init_test_db()
 
 @pytest.fixture
 def db():
-    from stock.data.model import models
-    from stock.data.model import schemas
-    from stock.data.model.database import SessionLocal, engine
-
-    models.Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
+        recreate_test_db()
+        add_country(db)
+        add_city(db)
+        add_exchanges(db)
+        add_ticker(db)
         yield db
     finally:
+        drop_test_db()
         db.close()
 
+def add_city(db: SessionLocal):
+    # Add test data
+    crud.set_city(db, city=models.CityModel(
+        name="New York", country_id=1
+    ))
 
-def test_get_ticker(db: Session):
+    crud.set_city(db, city=models.CityModel(
+        name="London", country_id=2
+    ))
+
+def add_country(db: SessionLocal):
+    # Add test data
+    crud.set_country(db, country=models.CountryModel(
+        name="United States", code="US"
+    ))
+
+    crud.set_country(db, country=models.CountryModel(
+        name="United Kingdom", code="UK"
+    ))
+
+def add_ticker(db: SessionLocal):
+    # Add test data
+    crud.set_ticker(db, ticker=models.TickerModel(
+        ticker="AAPL", name="Apple Inc.", exchange_id=1
+    ))
+
+def add_exchanges(db: SessionLocal):
+    # Add test data
+    crud.set_exchange_list(db, exchange_list=[
+        models.ExchangeModel(
+            name="National Association of Securities Dealers Automated Quotations", country_id=1, city_id=1, timezone_id=1,
+            acronym="NASDAQ", mic="XNAS"
+        ),
+        models.ExchangeModel(
+            name="New York Stock Exchange", country_id=1, city_id=1, timezone_id=1,
+            acronym="NYSE", mic="XNYS"
+        ),
+        models.ExchangeModel(
+            name="London Stock Exchange", country_id=2, city_id=2, timezone_id=2,
+            acronym="LSE", mic="XLON"
+        )
+    ])
+    crud.set_ticker(db, ticker=models.TickerModel(
+        ticker="AAPL", name="Apple Inc.", exchange_id=1
+    ))
+
+
+def test_get_ticker(db: SessionLocal):
     ticker = crud.get_ticker(db, ticker_id=1)
     assert ticker.id == 1
     assert ticker.ticker == "AAPL"
 
-def test_get_tickers(db: Session):
+def test_get_tickers(db: SessionLocal):
     tickers = crud.get_tickers(db)
-    assert len(tickers) == 3
+    assert len(tickers) == 1
 
-def test_get_ticker_by_name(db: Session):
+def test_get_ticker_by_name(db: SessionLocal):
     ticker = crud.get_ticker_by_name(db, ticker="AAPL")
     assert ticker.id == 1
     assert ticker.ticker == "AAPL"
 
-def test_get_exchange(db: Session):
+def test_get_exchange(db: SessionLocal):
     exchange = crud.get_exchange(db, exchange_id=1)
     assert exchange.id == 1
     assert exchange.exchange == "NASDAQ"
 
-def test_get_exchanges(db: Session):
+def test_get_exchanges(db: SessionLocal):
     exchanges = crud.get_exchanges(db)
     assert len(exchanges) == 3

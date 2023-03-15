@@ -1,7 +1,13 @@
 import datetime
 from sqlalchemy.orm import Session
 
-from . import models, schemas
+from . import models
+
+def set_ticker(db: Session, ticker: models.TickerModel):
+    db.add(ticker)
+    db.commit()
+    db.refresh(ticker)
+    return ticker
 
 def get_ticker(db: Session, ticker_id: int = None, ticker: str = None):
     if ticker_id:
@@ -28,20 +34,18 @@ def get_exchange(db: Session, exchange_id: int =None, name: str = None):
 def get_exchanges(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.ExchangeModel).offset(skip).limit(limit).all()
 
-def create_exchange(db: Session, exchange: schemas.ExchangeCreate):
-    db_exchange = models.ExchangeModel(**exchange.dict())
-    db.add(db_exchange)
+def set_exchange(db: Session, exchange: models.ExchangeModel):
+    db.add(exchange)
     db.commit()
-    db.refresh(db_exchange)
-    return db_exchange
+    db.refresh(exchange)
+    return exchange
 
-def create_exchange_list(db: Session, exchange_list: list):
+def set_exchange_list(db: Session, exchange_list: list):
     for exchange in exchange_list:
-        db_exchange = models.ExchangeModel(**exchange.dict())
-        db.add(db_exchange)
+        db.add(exchange)
     db.commit()
-    db.refresh(db_exchange)
-    return db_exchange
+    db.refresh(exchange)
+    return exchange
 
 def get_currency(db: Session, currency_id: int, name: str = None):
     if currency_id:
@@ -54,6 +58,11 @@ def get_currency(db: Session, currency_id: int, name: str = None):
 def get_currencies(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.CurrencyModel).offset(skip).limit(limit).all()
 
+def set_country(db: Session, country: models.CountryModel):
+    db.add(country)
+    db.commit() 
+    db.refresh(country)
+
 def get_country(db: Session, country_id: int = None, name: str = None):
     if country_id:
         return db.query(models.CountryModel).filter(models.CountryModel.id == country_id).first()
@@ -65,6 +74,11 @@ def get_country(db: Session, country_id: int = None, name: str = None):
 def get_countries(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.CountryModel).offset(skip).limit(limit).all()
 
+def set_city(db: Session, city: models.CityModel):
+    db.add(city)
+    db.commit() 
+    db.refresh(city)
+
 def get_city(db: Session, city_id: int = None, name: str = None, country_id: int = None):
     if country_id and name:
         return db.query(models.CityModel).filter(models.CityModel.country_id == country_id).filter(models.CityModel.name == name).first()
@@ -74,9 +88,14 @@ def get_city(db: Session, city_id: int = None, name: str = None, country_id: int
         return db.query(models.CityModel).filter(models.CityModel.name == name).first()
     else:
         raise Exception("Must provide either city_id or name and country_id")
-
+ 
 def get_cities(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.CityModel).offset(skip).limit(limit).all()
+
+def set_timezone(db: Session, timezone: models.TimezoneModel):
+    db.add(timezone)
+    db.commit() 
+    db.refresh(timezone)
 
 def get_timezone(db: Session, timezone_id: int = None, name: str = None):
     if timezone_id:

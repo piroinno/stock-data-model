@@ -11,8 +11,20 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python 3.11
         uses: actions/setup-python@v2
         with:
@@ -26,10 +38,12 @@ jobs:
           pip install flake8
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-      - name: Test with pytest
+      - name: Connect to PostgreSQL and Test with pytest
         run: |
           pip install pytest
           pytest
+        env:
+          DATABASE_URL: postgresql://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/postgres
       - name: Build Package
         run: |
           pip install poetry
@@ -41,3 +55,4 @@ jobs:
   
   # ${{ if github.ref == 'refs/heads/main' or github.ref == 'refs/heads/dev' or github.ref == 'refs/heads/uat' }}:
   #   deploy:
+  
