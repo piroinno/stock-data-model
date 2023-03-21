@@ -84,6 +84,4 @@ jobs:
         with:
           packagefeed: ${{ secrets.AZURE_PYPI_FEED }}
           packagefeedpassword: ${{ secrets.AZURE_PYPI_PASSWORD }}
-          testdatabasehost: localhost
-          testdatabasepassword: ${{ secrets.POSTGRES_PASSWORD }}
           appfolder: ${{ matrix.app }}
