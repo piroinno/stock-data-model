@@ -84,4 +84,5 @@ jobs:
         with:
           packagefeed: ${{ secrets.AZURE_PYPI_FEED }}
           packagefeedpassword: ${{ secrets.AZURE_PYPI_PASSWORD }}
+          packagefeedmetadata: ${{ secrets.AZURE_PYPI_METADATA }}
           appfolder: ${{ matrix.app }}
