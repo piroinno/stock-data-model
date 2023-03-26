@@ -1,13 +1,19 @@
 import os
+from os import environ
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 
+connect_args = {}
+if environ.get('IS_TESTING') is None:
+    connect_args = {
+        'sslmode': 'require', 'sslrootcert': os.environ.get('CA_FILE_PATH')
+    }
+
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={
-        'sslmode': 'require', 'sslrootcert': os.environ.get('CA_FILE_PATH')}
+    SQLALCHEMY_DATABASE_URL, connect_args=connect_args
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
