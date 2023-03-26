@@ -26,6 +26,7 @@ env:
   APP_AUTO_WORKING_FOLDER: "./"
   APP_AUTO_WORKING_PATH: ${{ github.workspace }}
   ENVIRONMENT: ${{ fromJSON('["dev", "prd"]')[github.ref == 'refs/heads/main'] }}
+  IS_TESTING: true
 
 jobs:
   prepare:
@@ -54,7 +55,6 @@ jobs:
         image: postgres
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          IS_TESTING: true
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
