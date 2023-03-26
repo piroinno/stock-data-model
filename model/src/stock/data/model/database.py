@@ -9,7 +9,7 @@ SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 connect_args = {}
 if environ.get('IS_TESTING') is None:
     connect_args = {
-        'sslmode': 'require', 'sslrootcert': os.environ.get('CA_FILE_PATH')
+        'sslmode': 'require', 'sslrootcert': 'BaltimoreCyberTrustRoot.crt.pem'
     }
 
 engine = create_engine(
