@@ -4,9 +4,6 @@ on:
   workflow_dispatch:
     branches:
       - '**'
-  push:
-    branches:
-      - '**'
   pull_request:
     branches:
       - dev
@@ -26,10 +23,11 @@ env:
   APP_AUTO_WORKING_FOLDER: "./"
   APP_AUTO_WORKING_PATH: ${{ github.workspace }}
   ENVIRONMENT: ${{ fromJSON('["dev", "prd"]')[github.ref == 'refs/heads/main'] }}
+  IS_TESTING: true
 
 jobs:
   prepare:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -45,7 +43,7 @@ jobs:
 
   test:
     if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: prepare
     strategy:
       matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
@@ -64,7 +62,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Test the application
-        uses: piroinno/stock-data-app-automation/test/poetry/@init
+        uses: piroinno/stock-data-app-automation/test/poetry/@v1.4.0
         with:
           packagefeed: ${{ secrets.AZURE_PYPI_FEED }}
           packagefeedpassword: ${{ secrets.AZURE_PYPI_PASSWORD }}
@@ -73,14 +71,14 @@ jobs:
           appfolder: ${{ matrix.app }}
 
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [prepare, test]
     strategy:
       matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v3
       - name: Build application package
-        uses: piroinno/stock-data-app-automation/build/poetry/@init
+        uses: piroinno/stock-data-app-automation/build/poetry/@v1.4.0
         with:
           packagefeed: ${{ secrets.AZURE_PYPI_FEED }}
           packagefeedpassword: ${{ secrets.AZURE_PYPI_PASSWORD }}

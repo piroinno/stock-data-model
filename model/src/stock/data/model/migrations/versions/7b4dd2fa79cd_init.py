@@ -1,8 +1,8 @@
-"""Core1
+"""init
 
-Revision ID: fc608628c9db
+Revision ID: 7b4dd2fa79cd
 Revises: 
-Create Date: 2023-03-12 20:54:57.410322
+Create Date: 2023-03-26 03:26:52.074557
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'fc608628c9db'
+revision = '7b4dd2fa79cd'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -38,7 +38,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_currencies_code'), 'currencies', ['code'], unique=False)
     op.create_index(op.f('ix_currencies_id'), 'currencies', ['id'], unique=False)
     op.create_index(op.f('ix_currencies_name'), 'currencies', ['name'], unique=False)
-    op.create_table('eod_data_stores',
+    op.create_table('eod_ingestor_data_stores',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
     sa.Column('time_generated', sa.DateTime(), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=True),
@@ -48,12 +48,12 @@ def upgrade() -> None:
     sa.Column('tenant_id', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_eod_data_stores_container'), 'eod_data_stores', ['container'], unique=False)
-    op.create_index(op.f('ix_eod_data_stores_id'), 'eod_data_stores', ['id'], unique=False)
-    op.create_index(op.f('ix_eod_data_stores_name'), 'eod_data_stores', ['name'], unique=False)
-    op.create_index(op.f('ix_eod_data_stores_subscription_id'), 'eod_data_stores', ['subscription_id'], unique=False)
-    op.create_index(op.f('ix_eod_data_stores_tenant_id'), 'eod_data_stores', ['tenant_id'], unique=False)
-    op.create_index(op.f('ix_eod_data_stores_url'), 'eod_data_stores', ['url'], unique=False)
+    op.create_index(op.f('ix_eod_ingestor_data_stores_container'), 'eod_ingestor_data_stores', ['container'], unique=False)
+    op.create_index(op.f('ix_eod_ingestor_data_stores_id'), 'eod_ingestor_data_stores', ['id'], unique=False)
+    op.create_index(op.f('ix_eod_ingestor_data_stores_name'), 'eod_ingestor_data_stores', ['name'], unique=False)
+    op.create_index(op.f('ix_eod_ingestor_data_stores_subscription_id'), 'eod_ingestor_data_stores', ['subscription_id'], unique=False)
+    op.create_index(op.f('ix_eod_ingestor_data_stores_tenant_id'), 'eod_ingestor_data_stores', ['tenant_id'], unique=False)
+    op.create_index(op.f('ix_eod_ingestor_data_stores_url'), 'eod_ingestor_data_stores', ['url'], unique=False)
     op.create_table('timezones',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
@@ -91,11 +91,11 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['timezone_id'], ['timezones.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_exchanges_acronym'), 'exchanges', ['acronym'], unique=True)
+    op.create_index(op.f('ix_exchanges_acronym'), 'exchanges', ['acronym'], unique=False)
     op.create_index(op.f('ix_exchanges_city_id'), 'exchanges', ['city_id'], unique=False)
     op.create_index(op.f('ix_exchanges_country_id'), 'exchanges', ['country_id'], unique=False)
     op.create_index(op.f('ix_exchanges_id'), 'exchanges', ['id'], unique=False)
-    op.create_index(op.f('ix_exchanges_mic'), 'exchanges', ['mic'], unique=True)
+    op.create_index(op.f('ix_exchanges_mic'), 'exchanges', ['mic'], unique=False)
     op.create_index(op.f('ix_exchanges_name'), 'exchanges', ['name'], unique=True)
     op.create_index(op.f('ix_exchanges_timezone_id'), 'exchanges', ['timezone_id'], unique=False)
     op.create_table('tickers',
@@ -104,12 +104,9 @@ def upgrade() -> None:
     sa.Column('time_generated', sa.DateTime(), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=True),
     sa.Column('exchange_id', sa.Integer(), nullable=True),
     sa.Column('ticker', sa.String(), nullable=True),
-    sa.Column('currency_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['currency_id'], ['currencies.id'], ),
     sa.ForeignKeyConstraint(['exchange_id'], ['exchanges.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_tickers_currency_id'), 'tickers', ['currency_id'], unique=False)
     op.create_index(op.f('ix_tickers_exchange_id'), 'tickers', ['exchange_id'], unique=False)
     op.create_index(op.f('ix_tickers_id'), 'tickers', ['id'], unique=False)
     op.create_index(op.f('ix_tickers_name'), 'tickers', ['name'], unique=False)
@@ -125,7 +122,7 @@ def upgrade() -> None:
     sa.Column('timezone_id', sa.Integer(), nullable=True),
     sa.Column('start_date', sa.DateTime(), nullable=True),
     sa.Column('end_date', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['data_store_id'], ['eod_data_stores.id'], ),
+    sa.ForeignKeyConstraint(['data_store_id'], ['eod_ingestor_data_stores.id'], ),
     sa.ForeignKeyConstraint(['ticker_id'], ['tickers.id'], ),
     sa.ForeignKeyConstraint(['timezone_id'], ['timezones.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -144,7 +141,7 @@ def upgrade() -> None:
     sa.Column('job_status_id', sa.Integer(), nullable=True),
     sa.Column('data_store_id', sa.Integer(), nullable=True),
     sa.Column('blob', sa.String(), nullable=True),
-    sa.ForeignKeyConstraint(['data_store_id'], ['eod_data_stores.id'], ),
+    sa.ForeignKeyConstraint(['data_store_id'], ['eod_ingestor_data_stores.id'], ),
     sa.ForeignKeyConstraint(['job_status_id'], ['eod_ingestor_job_status.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -176,7 +173,6 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_tickers_name'), table_name='tickers')
     op.drop_index(op.f('ix_tickers_id'), table_name='tickers')
     op.drop_index(op.f('ix_tickers_exchange_id'), table_name='tickers')
-    op.drop_index(op.f('ix_tickers_currency_id'), table_name='tickers')
     op.drop_table('tickers')
     op.drop_index(op.f('ix_exchanges_timezone_id'), table_name='exchanges')
     op.drop_index(op.f('ix_exchanges_name'), table_name='exchanges')
@@ -195,13 +191,13 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_timezones_dst'), table_name='timezones')
     op.drop_index(op.f('ix_timezones_abbr'), table_name='timezones')
     op.drop_table('timezones')
-    op.drop_index(op.f('ix_eod_data_stores_url'), table_name='eod_data_stores')
-    op.drop_index(op.f('ix_eod_data_stores_tenant_id'), table_name='eod_data_stores')
-    op.drop_index(op.f('ix_eod_data_stores_subscription_id'), table_name='eod_data_stores')
-    op.drop_index(op.f('ix_eod_data_stores_name'), table_name='eod_data_stores')
-    op.drop_index(op.f('ix_eod_data_stores_id'), table_name='eod_data_stores')
-    op.drop_index(op.f('ix_eod_data_stores_container'), table_name='eod_data_stores')
-    op.drop_table('eod_data_stores')
+    op.drop_index(op.f('ix_eod_ingestor_data_stores_url'), table_name='eod_ingestor_data_stores')
+    op.drop_index(op.f('ix_eod_ingestor_data_stores_tenant_id'), table_name='eod_ingestor_data_stores')
+    op.drop_index(op.f('ix_eod_ingestor_data_stores_subscription_id'), table_name='eod_ingestor_data_stores')
+    op.drop_index(op.f('ix_eod_ingestor_data_stores_name'), table_name='eod_ingestor_data_stores')
+    op.drop_index(op.f('ix_eod_ingestor_data_stores_id'), table_name='eod_ingestor_data_stores')
+    op.drop_index(op.f('ix_eod_ingestor_data_stores_container'), table_name='eod_ingestor_data_stores')
+    op.drop_table('eod_ingestor_data_stores')
     op.drop_index(op.f('ix_currencies_name'), table_name='currencies')
     op.drop_index(op.f('ix_currencies_id'), table_name='currencies')
     op.drop_index(op.f('ix_currencies_code'), table_name='currencies')
