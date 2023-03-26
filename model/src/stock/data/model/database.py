@@ -6,23 +6,28 @@ from sqlalchemy.orm import sessionmaker
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={}
+    SQLALCHEMY_DATABASE_URL, connect_args={
+        'sslmode': 'require', 'sslrootcert': os.environ.get('CA_FILE_PATH')}
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
+
 def init_test_db(schema="test"):
     Base.metadata.schema = schema
     Base.metadata.create_all(bind=engine)
+
 
 def drop_test_db(schema="test"):
     Base.metadata.schema = schema
     Base.metadata.drop_all(bind=engine)
 
+
 def recreate_test_db():
     drop_test_db()
     init_test_db()
+
 
 def get_test_db():
     db = SessionLocal()
