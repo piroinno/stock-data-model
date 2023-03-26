@@ -4,9 +4,6 @@ on:
   workflow_dispatch:
     branches:
       - '**'
-  push:
-    branches:
-      - '**'
   pull_request:
     branches:
       - dev
@@ -65,7 +62,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Test the application
-        uses: piroinno/stock-data-app-automation/test/poetry/@v1.0.0
+        uses: piroinno/stock-data-app-automation/test/poetry/@v1.4.0
         with:
           packagefeed: ${{ secrets.AZURE_PYPI_FEED }}
           packagefeedpassword: ${{ secrets.AZURE_PYPI_PASSWORD }}
@@ -81,7 +78,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build application package
-        uses: piroinno/stock-data-app-automation/build/poetry/@v1.0.0
+        uses: piroinno/stock-data-app-automation/build/poetry/@v1.4.0
         with:
           packagefeed: ${{ secrets.AZURE_PYPI_FEED }}
           packagefeedpassword: ${{ secrets.AZURE_PYPI_PASSWORD }}
